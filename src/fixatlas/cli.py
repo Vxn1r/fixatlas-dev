@@ -7,7 +7,7 @@ import json
 import platform
 import sys
 from pathlib import Path
-from typing import Sequence
+from collections.abc import Sequence
 
 from fixatlas import __version__
 from fixatlas.engine import MAX_INPUT_CHARS, InputTooLargeError, analyze

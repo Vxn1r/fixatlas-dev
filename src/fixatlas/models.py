@@ -21,7 +21,7 @@ class Rule:
     verification: str
 
     @classmethod
-    def from_dict(cls, value: dict[str, Any]) -> "Rule":
+    def from_dict(cls, value: dict[str, Any]) -> Rule:
         return cls(
             id=value["id"],
             title=value["title"],
