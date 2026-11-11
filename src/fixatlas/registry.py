@@ -5,9 +5,9 @@ from __future__ import annotations
 import json
 import re
 from importlib.resources import files
-from urllib.parse import urlsplit
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 from fixatlas.models import Rule
 
