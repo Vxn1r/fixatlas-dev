@@ -78,47 +78,30 @@ def parse_registry(payload: Any) -> tuple[Rule, ...]:
                 )
             cleaned[field] = [item.strip() for item in values]
         if not cleaned["match_any"] and not cleaned["match_all"]:
-            raise RegistryError(
-                f"Rule {rule_id!r}: at least one matching signal is required"
-            )
+            raise RegistryError(f"Rule {rule_id!r}: at least one matching signal is required")
         if not cleaned["checks"]:
-            raise RegistryError(
-                f"Rule {rule_id!r}: at least one diagnostic check is required"
-            )
+            raise RegistryError(f"Rule {rule_id!r}: at least one diagnostic check is required")
         if not cleaned["actions"]:
-            raise RegistryError(
-                f"Rule {rule_id!r}: at least one recommended action is required"
-            )
+            raise RegistryError(f"Rule {rule_id!r}: at least one recommended action is required")
         references = raw.get("references", [])
         if not isinstance(references, list):
             raise RegistryError(f"Rule {rule_id!r}: references must be a list")
         cleaned_references: list[dict[str, str]] = []
         for reference in references:
             if not isinstance(reference, dict):
-                raise RegistryError(
-                    f"Rule {rule_id!r}: references must contain label/url objects"
-                )
+                raise RegistryError(f"Rule {rule_id!r}: references must contain label/url objects")
             label = reference.get("label")
             url = reference.get("url")
             if not isinstance(label, str) or not label.strip():
                 raise RegistryError(f"Rule {rule_id!r}: reference label must be non-empty")
             parsed_url = urlsplit(url.strip()) if isinstance(url, str) else None
-            if (
-                parsed_url is None
-                or parsed_url.scheme != "https"
-                or not parsed_url.hostname
-            ):
+            if parsed_url is None or parsed_url.scheme != "https" or not parsed_url.hostname:
                 raise RegistryError(
                     f"Rule {rule_id!r}: reference URL must use HTTPS and include a valid host"
                 )
-            if (
-                len(label.strip()) > MAX_FIELD_CHARS
-                or len(url.strip()) > MAX_FIELD_CHARS
-            ):
+            if len(label.strip()) > MAX_FIELD_CHARS or len(url.strip()) > MAX_FIELD_CHARS:
                 raise RegistryError(f"Rule {rule_id!r}: reference fields are too long")
-            cleaned_references.append(
-                {"label": label.strip(), "url": url.strip()}
-            )
+            cleaned_references.append({"label": label.strip(), "url": url.strip()})
         cleaned["references"] = cleaned_references
         rules.append(Rule.from_dict(cleaned))
     return tuple(rules)

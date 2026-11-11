@@ -37,4 +37,4 @@ def test_github_bootstrap_script_is_safe_and_repeatable():
     assert "git push origin v0.1.0" in content
     assert "--add-topic ai-agents" in content
     assert 'gh label create "$name"' in content
-    assert "fail \"origin points to" in content
+    assert 'fail "origin points to' in content

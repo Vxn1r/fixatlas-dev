@@ -68,11 +68,7 @@ def list_rules(category: str | None = None) -> dict[str, Any]:
     if category is not None and len(category) > 500:
         raise ValueError("category must be 500 characters or fewer")
     needle = category.strip().casefold() if category is not None else ""
-    rules = [
-        rule
-        for rule in load_registry()
-        if not needle or needle in rule.category.casefold()
-    ]
+    rules = [rule for rule in load_registry() if not needle or needle in rule.category.casefold()]
     return {
         "count": len(rules),
         "rules": [

@@ -84,10 +84,7 @@ def _render_explain(matches: list, source_label: str) -> None:
     print(f"FixAtlas {__version__}  |  source: {source_label}  |  offline analysis")
     if not matches:
         print("\nNo matching rule found.")
-        print(
-            "This does not mean the error is harmless; the current rule set "
-            "may not cover it yet."
-        )
+        print("This does not mean the error is harmless; the current rule set may not cover it yet.")
         print("Contribute a minimal, sanitized example at the project's issue tracker.")
         return
     for number, match in enumerate(matches, start=1):
