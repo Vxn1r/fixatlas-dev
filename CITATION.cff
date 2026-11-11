@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If FixAtlas helps your work, please cite the project repository."
+title: "FixAtlas"
+abstract: "Evidence-first, offline developer error diagnostics for humans and coding agents."
+version: 0.1.0
+license: MIT
+repository-code: "https://github.com/Vxn1r/fixatlas-dev"
+authors:
+  - name: "Vxn1r"

@@ -1,0 +1,46 @@
+name: Bug report
+description: Report a reproducible FixAtlas bug
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: "Please remove tokens, passwords, private URLs, usernames, and other sensitive data before submitting logs."
+  - type: input
+    id: version
+    attributes:
+      label: FixAtlas version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: Operating system and Python version
+      placeholder: "Windows 11, Python 3.12"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: sanitized
+    attributes:
+      label: Sanitized error excerpt
+      description: Never paste credentials, private keys, or production secrets.
+    validations:
+      required: false

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security policy
+    url: https://github.com/Vxn1r/fixatlas-dev/blob/main/SECURITY.md
+    about: Report potential vulnerabilities privately; do not post secrets publicly.
+  - name: Documentation and support
+    url: https://github.com/Vxn1r/fixatlas-dev/blob/main/SUPPORT.md
+    about: Check support guidance before opening a new issue.

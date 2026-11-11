@@ -1,0 +1,20 @@
+# FixAtlas
+
+FixAtlas is an offline-first developer troubleshooting toolkit for humans and coding agents.
+
+- Runtime: Python 3.10+; core CLI has no runtime dependencies.
+- Optional MCP integration: official MCP Python SDK v2, Python 3.11+, local stdio transport.
+- Command: `fixatlas`.
+- CLI features: explain UTF-8 log files/stdin, deterministic rule matching, JSON output, list/search rules, validate custom registries, local runtime doctor.
+- Agent features: read-only tool functions and MCP tools for explain/search/list/capabilities.
+- Repository assets: `agents/`, `skills/`, `rules/`, `mcp-configs/`, `docs/`, and `.github/` workflows/templates.
+- Privacy: no telemetry, no network calls in the CLI or MCP tools, no log persistence, no shell command execution.
+- Main documentation: README.md.
+- Rule format: docs/rule-format.md.
+- Architecture: docs/architecture.md.
+- MCP setup: docs/mcp-integration.md.
+- Agent workflow: skills/diagnose-error/SKILL.md.
+- Contribution process: CONTRIBUTING.md.
+- Security process: SECURITY.md.
+
+A matching rule is a diagnostic lead, not a confirmed root cause or guaranteed fix. Do not execute suggested actions automatically.

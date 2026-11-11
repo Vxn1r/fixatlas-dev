@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fixatlas-cli"
+version = "0.1.0"
+description = "Evidence-first developer error diagnostics for humans and coding agents."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "FixAtlas Contributors" }]
+keywords = ["debugging", "developer-tools", "error-diagnostics", "cli", "troubleshooting", "open-source"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Software Development :: Debuggers",
+  "Topic :: Software Development :: Quality Assurance",
+  "Topic :: Utilities",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.6", "build>=1.2", "mcp>=2.0,<3; python_version >= '3.11'"]
+mcp = ["mcp>=2.0,<3; python_version >= '3.11'"]
+
+[project.scripts]
+fixatlas = "fixatlas.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Vxn1r/fixatlas-dev"
+Repository = "https://github.com/Vxn1r/fixatlas-dev"
+Issues = "https://github.com/Vxn1r/fixatlas-dev/issues"
+Changelog = "https://github.com/Vxn1r/fixatlas-dev/blob/main/CHANGELOG.md"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"fixatlas.data" = ["*.json"]
+"fixatlas" = ["py.typed"]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

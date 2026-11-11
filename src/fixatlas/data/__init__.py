@@ -1,0 +1,1 @@
+"""Bundled FixAtlas rule database."""

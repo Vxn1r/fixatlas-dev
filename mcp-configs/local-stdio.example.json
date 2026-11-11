@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "fixatlas": {
+      "command": "fixatlas",
+      "args": ["mcp"]
+    }
+  }
+}

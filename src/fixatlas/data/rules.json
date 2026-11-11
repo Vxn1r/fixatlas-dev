@@ -1,0 +1,289 @@
+{
+  "schema_version": 1,
+  "rules": [
+    {
+      "id": "npm-ebadplatform",
+      "title": "npm package is incompatible with this platform",
+      "category": "javascript / npm",
+      "summary": "npm rejected a package because its declared operating-system, CPU-architecture, or libc constraints do not match the current environment.",
+      "root_cause": "The package (or one of its dependencies) declares platform constraints that exclude the environment in which npm is running.",
+      "match_any": [
+        "EBADPLATFORM"
+      ],
+      "match_all": [],
+      "checks": [
+        "Confirm the environment with `node --version`, `npm --version`, and `node -p \"process.platform + ' ' + process.arch\"`.",
+        "Identify the exact package named near the EBADPLATFORM message; do not assume the top-level package is responsible.",
+        "Inspect that package's published `os`, `cpu`, and `libc` metadata and its documented supported platforms."
+      ],
+      "actions": [
+        "Choose a package release that explicitly supports this operating system and architecture, or use the vendor-documented alternative for this platform.",
+        "If the project is running inside a container, WSL, Termux, or an emulator, verify that Node.js reports the platform you expect.",
+        "Avoid using `--force` as a first response: it can bypass compatibility checks without making the package work."
+      ],
+      "references": [
+        {
+          "label": "npm package.json: os / cpu",
+          "url": "https://docs.npmjs.com/cli/v10/configuring-npm/package-json#os"
+        },
+        {
+          "label": "Node.js process.arch",
+          "url": "https://nodejs.org/api/process.html#processarch"
+        }
+      ],
+      "verification": "Rule signature and registry tests are covered by the local test suite; package-specific compatibility must be verified against the package's current metadata."
+    },
+    {
+      "id": "npm-eresolve",
+      "title": "npm could not resolve the dependency tree",
+      "category": "javascript / npm",
+      "summary": "npm found peer-dependency requirements that cannot all be satisfied by the versions currently selected.",
+      "root_cause": "Two or more packages request incompatible peer-dependency ranges, or the project's installed dependency set conflicts with its manifest.",
+      "match_any": [
+        "ERESOLVE",
+        "unable to resolve dependency tree"
+      ],
+      "match_all": [],
+      "checks": [
+        "Read the full ERESOLVE report and note the packages listed as `Found` and `Could not resolve dependency`.",
+        "Compare the peer-dependency ranges in the involved packages' published metadata.",
+        "Check whether package.json and the lockfile describe the same intended dependency set."
+      ],
+      "actions": [
+        "Select mutually compatible package versions and update the manifest and lockfile together.",
+        "Upgrade or replace the package whose peer range conflicts with the rest of the application.",
+        "Do not default to `--force` or `--legacy-peer-deps`; those flags can hide a dependency conflict rather than resolve it."
+      ],
+      "references": [
+        {
+          "label": "npm peerDependencies",
+          "url": "https://docs.npmjs.com/cli/v10/configuring-npm/package-json#peerdependencies"
+        },
+        {
+          "label": "npm install",
+          "url": "https://docs.npmjs.com/cli/v10/commands/npm-install"
+        }
+      ],
+      "verification": "Rule signature and registry tests are covered by the local test suite; the specific version conflict must be checked in the project's dependency graph."
+    },
+    {
+      "id": "python-module-not-found",
+      "title": "Python cannot find an imported module",
+      "category": "python / imports",
+      "summary": "The active Python interpreter cannot resolve a module requested by an import statement.",
+      "root_cause": "The dependency may be missing from the active environment, installed for a different interpreter, or imported under a different distribution/module name.",
+      "match_any": [
+        "ModuleNotFoundError",
+        "No module named"
+      ],
+      "match_all": [],
+      "checks": [
+        "Confirm which interpreter is running with `python -c \"import sys; print(sys.executable)\"`.",
+        "Check the active environment with `python -m pip show <distribution-name>`.",
+        "Compare the import name with the package's documented installation name; they are not always identical."
+      ],
+      "actions": [
+        "Install the missing distribution into the same interpreter/environment that runs the program, preferably inside a project virtual environment.",
+        "If a virtual environment is intended, activate it and repeat the interpreter and package checks.",
+        "For a project, add the dependency to its declared dependency file so collaborators can reproduce the environment."
+      ],
+      "references": [
+        {
+          "label": "Python virtual environments",
+          "url": "https://docs.python.org/3/library/venv.html"
+        },
+        {
+          "label": "pip user guide",
+          "url": "https://pip.pypa.io/en/stable/user_guide/"
+        }
+      ],
+      "verification": "Rule signature and registry tests are covered by the local test suite; the missing module and interpreter must be confirmed locally."
+    },
+    {
+      "id": "pip-resolution-impossible",
+      "title": "pip cannot find a compatible dependency set",
+      "category": "python / packaging",
+      "summary": "pip's resolver cannot find versions that satisfy all declared constraints for the requested packages and Python environment.",
+      "root_cause": "Pinned versions, transitive requirements, Python-version constraints, or platform-specific wheels may be mutually incompatible.",
+      "match_any": [
+        "ResolutionImpossible",
+        "conflicting dependencies"
+      ],
+      "match_all": [],
+      "checks": [
+        "Read the resolver's conflict report and identify the exact packages and version ranges it names.",
+        "Check Python version and platform compatibility for each required package.",
+        "Review direct pins and constraints files before changing transitive dependencies."
+      ],
+      "actions": [
+        "Relax or update only the constraints that are genuinely incompatible, then resolve and test the complete environment again.",
+        "Prefer a supported package release for the current Python version rather than forcing an incompatible install.",
+        "Record the resulting dependency set in the project's standard lock or requirements workflow."
+      ],
+      "references": [
+        {
+          "label": "pip dependency resolution",
+          "url": "https://pip.pypa.io/en/stable/topics/dependency-resolution/"
+        }
+      ],
+      "verification": "Rule signature and registry tests are covered by the local test suite; exact package compatibility requires a resolver run in the target environment."
+    },
+    {
+      "id": "python-pep668",
+      "title": "Python environment is externally managed",
+      "category": "python / environments",
+      "summary": "The operating system marks its Python installation as externally managed and blocks package changes through the system interpreter.",
+      "root_cause": "The Python installation is managed by the operating system package manager, which protects system-owned packages from conflicting pip modifications.",
+      "match_any": [
+        "externally-managed-environment",
+        "This environment is externally managed"
+      ],
+      "match_all": [],
+      "checks": [
+        "Confirm whether the interpreter belongs to the operating system or a project virtual environment.",
+        "Check whether the distribution recommends its package manager for system-wide Python packages."
+      ],
+      "actions": [
+        "Create and activate a project virtual environment, then install project dependencies inside it.",
+        "Use the operating system package manager for packages intended to be installed system-wide.",
+        "Avoid bypassing the externally-managed protection unless you fully understand the system-level consequences."
+      ],
+      "references": [
+        {
+          "label": "Python venv",
+          "url": "https://docs.python.org/3/library/venv.html"
+        },
+        {
+          "label": "Externally managed environments specification",
+          "url": "https://packaging.python.org/en/latest/specifications/externally-managed-environments/"
+        }
+      ],
+      "verification": "Rule signature and registry tests are covered by the local test suite; the environment manager must be identified on the affected machine."
+    },
+    {
+      "id": "git-not-repository",
+      "title": "Git command was run outside a repository",
+      "category": "git",
+      "summary": "Git cannot find repository metadata in the current directory or any parent directory.",
+      "root_cause": "The shell is in the wrong directory, the repository has not been cloned or initialized, or the expected .git metadata is absent.",
+      "match_any": [
+        "fatal: not a git repository",
+        "not a git repository (or any of the parent directories)"
+      ],
+      "match_all": [],
+      "checks": [
+        "Print the current directory with `pwd` (or `Get-Location` in PowerShell).",
+        "List the directory contents and confirm that it is the project root.",
+        "Check whether the project contains a `.git` directory or worktree metadata."
+      ],
+      "actions": [
+        "Change into the existing cloned repository directory and retry the Git command.",
+        "If the project has never been cloned, clone the intended remote first.",
+        "Initialize a new repository only when this directory is meant to become a new Git project."
+      ],
+      "references": [
+        {
+          "label": "Git repository layout",
+          "url": "https://git-scm.com/docs/gitrepository-layout"
+        },
+        {
+          "label": "git status",
+          "url": "https://git-scm.com/docs/git-status"
+        }
+      ],
+      "verification": "Rule signature and registry tests are covered by the local test suite; the correct project directory is environment-specific."
+    },
+    {
+      "id": "git-ssh-publickey",
+      "title": "Git SSH authentication was rejected",
+      "category": "git / authentication",
+      "summary": "The SSH server did not accept a public key offered by the local SSH client.",
+      "root_cause": "The expected key may not be loaded, may not be registered with the Git hosting account, or the remote may use a different account or host alias.",
+      "match_any": [
+        "Permission denied (publickey)"
+      ],
+      "match_all": [],
+      "checks": [
+        "Inspect the remote URL with `git remote -v` and confirm that it points to the expected host and account.",
+        "Check which public keys are loaded using `ssh-add -l`; never paste or share a private key.",
+        "Run the hosting provider's documented SSH connection test and read the account name in the response."
+      ],
+      "actions": [
+        "Register the intended public key with the correct hosting account, or load the intended key into the SSH agent.",
+        "Correct an outdated remote URL if it points to the wrong host or account.",
+        "If SSH is not required, use the provider's documented HTTPS remote method instead."
+      ],
+      "references": [
+        {
+          "label": "GitHub: testing your SSH connection",
+          "url": "https://docs.github.com/en/authentication/connecting-to-github-with-ssh/testing-your-ssh-connection"
+        },
+        {
+          "label": "GitHub: adding a new SSH key",
+          "url": "https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account"
+        }
+      ],
+      "verification": "Rule signature and registry tests are covered by the local test suite; authentication must be tested against the user's own account."
+    },
+    {
+      "id": "gcc-undefined-reference",
+      "title": "The linker cannot find a referenced symbol",
+      "category": "c / c++ / toolchains",
+      "summary": "Compilation reached the linking stage, but the linker could not find a definition for one or more referenced symbols.",
+      "root_cause": "A required source file or library may be missing from the link command, a function signature may not match, or the library order may be incorrect for the selected linker.",
+      "match_any": [
+        "undefined reference to"
+      ],
+      "match_all": [],
+      "checks": [
+        "Confirm whether every declared function has a matching definition in a compiled source file or linked library.",
+        "Inspect the full compile-and-link command, not only the final error line.",
+        "Check C/C++ linkage and library ordering where relevant to the toolchain."
+      ],
+      "actions": [
+        "Include the source file that defines the missing symbol in the build target.",
+        "Link the required library using the compiler driver's documented options and ordering.",
+        "For C++ projects, verify namespace, overload, and `extern \"C\"` boundaries before changing linker flags."
+      ],
+      "references": [
+        {
+          "label": "GCC link options",
+          "url": "https://gcc.gnu.org/onlinedocs/gcc/Link-Options.html"
+        }
+      ],
+      "verification": "Rule signature and registry tests are covered by the local test suite; the exact missing symbol must be traced in the target build."
+    },
+    {
+      "id": "gradle-dependency-resolution",
+      "title": "Gradle could not resolve a dependency",
+      "category": "java / gradle",
+      "summary": "Gradle could not locate or select a dependency version required by a project configuration.",
+      "root_cause": "The dependency coordinates may be incorrect, the repository may be missing, credentials may be unavailable, or version constraints may conflict.",
+      "match_any": [
+        "Could not resolve all files for configuration",
+        "Could not resolve",
+        "Could not find"
+      ],
+      "match_all": [
+        "gradle"
+      ],
+      "checks": [
+        "Identify the exact dependency coordinates and configuration named in the failure.",
+        "Confirm that the required Maven repository is declared and reachable from the build environment.",
+        "Check whether the requested artifact version actually exists and supports the project's Java/Gradle versions."
+      ],
+      "actions": [
+        "Correct the dependency coordinates or version using the library's official publication information.",
+        "Add the required repository only when it is a trusted source for that dependency.",
+        "Resolve authentication or proxy configuration issues without committing credentials to the repository."
+      ],
+      "references": [
+        {
+          "label": "Gradle dependency management",
+          "url": "https://docs.gradle.org/current/userguide/dependency_management.html"
+        }
+      ],
+      "verification": "Rule signature and registry tests are covered by the local test suite; repository reachability and artifact availability are environment-dependent."
+    }
+  ]
+}
