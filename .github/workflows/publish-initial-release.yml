@@ -3,14 +3,14 @@ name: Publish initial release
 on:
   push:
     branches: [main]
+    paths:
+      - ".github/workflows/publish-initial-release.yml"
 
 permissions:
   contents: write
 
 jobs:
   publish:
-    # One-time guard: this runs only for the commit that intentionally creates v0.1.0.
-    if: github.event.head_commit.message == 'release: publish FixAtlas v0.1.0'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
